@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>246 Havre — East Boston</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400;1,500&family=Jost:wght@300;400;500&display=swap" rel="stylesheet"/>
+    <style>
+        *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+        :root{
+            --ink:#0E0D0B;
+            --deep:#151410;
+            --charcoal:#1E1C18;
+            --panel:#252320;
+            --gold:#C49A4A;
+            --gold-lt:#D9B46A;
+            --gold-dim:rgba(196,154,74,0.18);
+            --warm:#F2EBE0;
+            --muted:#8A8278;
+            --faint:rgba(242,235,224,0.06);
+            --border:rgba(196,154,74,0.14);
+        }
+        html{scroll-behavior:smooth;}
+        body{background:var(--ink);color:var(--warm);font-family:'Jost',sans-serif;font-weight:300;overflow-x:hidden;}
+
+        /* ─── SCROLLBAR ─── */
+        ::-webkit-scrollbar{width:4px;}
+        ::-webkit-scrollbar-track{background:var(--ink);}
+        ::-webkit-scrollbar-thumb{background:var(--gold-dim);border-radius:2px;}
+
+        /* ─── NAV ─── */
+        nav{
+            position:fixed;top:0;left:0;right:0;z-index:100;
+            display:flex;align-items:center;justify-content:space-between;
+            padding:1.2rem 3rem;
+            background:rgba(14,13,11,0.85);
+            backdrop-filter:blur(16px);
+            border-bottom:1px solid var(--border);
+            transition:padding 0.3s;
+        }
+        .nav-logo{font-family:'Playfair Display',serif;font-size:1rem;letter-spacing:0.08em;color:var(--warm);}
+        .nav-logo span{color:var(--gold);}
+        .nav-links{display:flex;gap:2rem;list-style:none;}
+        .nav-links a{font-size:0.7rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);text-decoration:none;transition:color 0.3s;}
+        .nav-links a:hover{color:var(--gold-lt);}
+        .nav-cta{font-size:0.68rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--ink);background:var(--gold);padding:0.55rem 1.2rem;text-decoration:none;transition:background 0.3s;}
+        .nav-cta:hover{background:var(--gold-lt);}
+
+        /* ─── HERO ─── */
+        .hero{
+            min-height:100vh;display:flex;flex-direction:column;justify-content:flex-end;
+            position:relative;overflow:hidden;padding:0 3rem 5rem;
+        }
+        .hero-bg{
+            position:absolute;inset:0;
+            background:
+                    radial-gradient(ellipse 90% 70% at 70% 30%,rgba(196,154,74,0.07) 0%,transparent 65%),
+                    radial-gradient(ellipse 60% 80% at 15% 85%,rgba(196,154,74,0.04) 0%,transparent 55%),
+                    var(--deep);
+        }
+        .hero-grain{
+            position:absolute;inset:0;opacity:0.35;pointer-events:none;
+            background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+        .hero-lines{
+            position:absolute;inset:0;opacity:0.04;
+            background:repeating-linear-gradient(90deg,rgba(196,154,74,1) 0,rgba(196,154,74,1) 1px,transparent 1px,transparent 80px);
+        }
+        .hero-eyebrow{
+            font-size:0.65rem;letter-spacing:0.28em;text-transform:uppercase;color:var(--gold);
+            margin-bottom:1.8rem;display:flex;align-items:center;gap:1rem;
+            opacity:0;animation:fU 0.9s 0.2s forwards;
+        }
+        .hero-eyebrow::before{content:'';display:block;width:2.5rem;height:1px;background:var(--gold);}
+        .hero-h1{
+            font-family:'Playfair Display',serif;
+            font-size:clamp(3.8rem,9vw,8rem);
+            font-weight:400;line-height:0.92;
+            color:var(--warm);margin-bottom:2rem;
+            opacity:0;animation:fU 1s 0.35s forwards;
+        }
+        .hero-h1 em{font-style:italic;color:var(--gold-lt);}
+        .hero-row{
+            display:flex;align-items:flex-end;justify-content:space-between;gap:3rem;
+            opacity:0;animation:fU 0.9s 0.6s forwards;
+        }
+        .hero-desc{font-size:0.92rem;color:var(--muted);line-height:1.8;max-width:400px;}
+        .hero-stats{display:flex;gap:3rem;}
+        .hstat-num{font-family:'Playfair Display',serif;font-size:2.8rem;font-weight:400;color:var(--gold-lt);line-height:1;}
+        .hstat-lbl{font-size:0.62rem;letter-spacing:0.16em;text-transform:uppercase;color:var(--muted);margin-top:0.3rem;}
+        .hero-scroll{
+            position:absolute;bottom:2rem;left:50%;transform:translateX(-50%);
+            display:flex;flex-direction:column;align-items:center;gap:0.5rem;
+            font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--muted);
+            opacity:0;animation:fU 1s 1.2s forwards;
+        }
+        .scroll-line{width:1px;height:40px;background:linear-gradient(to bottom,var(--gold),transparent);animation:scrollPulse 2s infinite;}
+
+        /* ─── SECTIONS ─── */
+        .wrap{max-width:1180px;margin:0 auto;padding:0 3rem;}
+        section{padding:7rem 0;}
+        .s-label{font-size:0.63rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:1rem;display:flex;align-items:center;gap:0.8rem;}
+        .s-label::before{content:'';width:1.4rem;height:1px;background:var(--gold);}
+        .s-title{font-family:'Playfair Display',serif;font-size:clamp(2rem,3.5vw,3.2rem);font-weight:400;line-height:1.1;color:var(--warm);margin-bottom:1rem;}
+        .s-title em{font-style:italic;color:var(--gold-lt);}
+        .s-desc{color:var(--muted);line-height:1.85;max-width:500px;margin-bottom:3.5rem;font-size:0.9rem;}
+
+        /* ─── OVERALL PROGRESS ─── */
+        .progress-hero{
+            display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;margin-bottom:5rem;
+        }
+        .big-pct{font-family:'Playfair Display',serif;font-size:clamp(6rem,14vw,12rem);font-weight:400;color:var(--gold);line-height:1;letter-spacing:-0.04em;}
+        .big-pct span{font-size:0.28em;vertical-align:top;margin-top:1.2em;display:inline-block;color:var(--gold-lt);}
+        .progress-meta p{font-size:0.88rem;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;}
+        .pill{
+            display:inline-flex;align-items:center;gap:0.5rem;
+            font-size:0.65rem;letter-spacing:0.14em;text-transform:uppercase;
+            border:1px solid var(--border);padding:0.5rem 1rem;color:var(--gold);
+        }
+        .pill-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);animation:pulse 2s infinite;}
+        .track{height:1px;background:rgba(196,154,74,0.12);margin:3rem 0 1rem;position:relative;}
+        .track-fill{height:100%;background:linear-gradient(to right,var(--gold),var(--gold-lt));width:0;transition:width 1.8s cubic-bezier(0.16,1,0.3,1);}
+        .track-labels{display:flex;justify-content:space-between;font-size:0.62rem;letter-spacing:0.1em;text-transform:uppercase;color:var(--muted);}
+
+        /* ─── TIMELINE MILESTONES ─── */
+        .milestones{display:grid;grid-template-columns:repeat(6,1fr);gap:0;position:relative;margin-top:4rem;}
+        .milestones::before{
+            content:'';position:absolute;top:1.2rem;left:0;right:0;height:1px;
+            background:linear-gradient(to right,var(--gold) 35%,rgba(196,154,74,0.2) 35%);
+        }
+        .ms{padding-top:3rem;position:relative;padding-right:1.5rem;}
+        .ms-dot{
+            position:absolute;top:0;left:0;
+            width:2.4rem;height:2.4rem;border-radius:50%;
+            border:1px solid rgba(196,154,74,0.3);
+            background:var(--ink);
+            display:flex;align-items:center;justify-content:center;
+            font-family:'Playfair Display',serif;font-size:0.75rem;color:var(--muted);
+        }
+        .ms.done .ms-dot{background:var(--gold);border-color:var(--gold);color:var(--ink);}
+        .ms.active .ms-dot{border-color:var(--gold-lt);color:var(--gold-lt);box-shadow:0 0 0 6px rgba(196,154,74,0.1);animation:pulse 2s infinite;}
+        .ms-name{font-size:0.72rem;font-weight:500;color:var(--warm);margin-bottom:0.3rem;letter-spacing:0.02em;}
+        .ms.upcoming .ms-name{color:var(--muted);}
+        .ms-date{font-size:0.62rem;letter-spacing:0.06em;color:rgba(138,130,120,0.5);}
+        .ms.done .ms-date{color:rgba(196,154,74,0.5);}
+
+        /* ─── FIELD JOURNAL ─── */
+        .journal-feed{display:flex;flex-direction:column;gap:0;}
+        .journal-entry{
+            display:grid;grid-template-columns:120px 1fr;
+            border-bottom:1px solid var(--border);
+            padding:3rem 0;
+            gap:3rem;
+            align-items:start;
+        }
+        .journal-entry:first-child{border-top:1px solid var(--border);}
+        .je-date-col{
+            padding-top:0.2rem;
+            position:sticky;top:6rem;
+        }
+        .je-week{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
+        .je-datenum{font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:400;color:var(--warm);line-height:1;}
+        .je-month{font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;color:var(--muted);margin-top:0.2rem;}
+        .je-content{}
+        .je-headline{font-family:'Playfair Display',serif;font-size:1.4rem;font-weight:400;color:var(--warm);margin-bottom:0.6rem;}
+        .je-body{font-size:0.88rem;color:var(--muted);line-height:1.8;margin-bottom:1.5rem;max-width:620px;}
+        .je-photos{display:grid;grid-template-columns:repeat(3,1fr);gap:1rem;}
+        .je-photo{
+            aspect-ratio:4/3;overflow:hidden;position:relative;
+            border:1px solid var(--border);
+            display:flex;align-items:center;justify-content:center;
+            flex-direction:column;gap:0.5rem;
+            cursor:pointer;transition:border-color 0.3s;
+        }
+        .je-photo:hover{border-color:var(--gold);}
+        .je-photo.has-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.5s;}
+        .je-photo.has-img:hover img{transform:scale(1.04);}
+        .je-photo.placeholder{background:var(--faint);}
+        .ph-icon{opacity:0.2;}
+        .ph-lbl{font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);opacity:0.5;}
+        .je-tag{
+            display:inline-flex;align-items:center;gap:0.4rem;
+            font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;
+            border:1px solid var(--border);padding:0.3rem 0.7rem;
+            color:var(--muted);margin-top:1rem;margin-right:0.5rem;
+        }
+        .je-tag.gold{border-color:var(--gold);color:var(--gold);}
+
+        /* ─── BEFORE / AFTER SLIDER ─── */
+        .ba-section{background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:6rem 0;}
+        .ba-wrap{max-width:1180px;margin:0 auto;padding:0 3rem;}
+        .ba-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:center;}
+        .ba-slider-container{position:relative;aspect-ratio:16/10;overflow:hidden;border:1px solid var(--border);cursor:col-resize;user-select:none;}
+        .ba-before,.ba-after{
+            position:absolute;inset:0;
+            display:flex;align-items:center;justify-content:center;
+            flex-direction:column;gap:0.5rem;
+        }
+        .ba-before{
+            background:
+                    repeating-linear-gradient(0deg,transparent,transparent 40px,rgba(196,154,74,0.03) 40px,rgba(196,154,74,0.03) 41px),
+                    repeating-linear-gradient(90deg,transparent,transparent 40px,rgba(196,154,74,0.03) 40px,rgba(196,154,74,0.03) 41px),
+                    var(--charcoal);
+            font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(138,130,120,0.4);
+        }
+        .ba-after{
+            background:
+                    radial-gradient(ellipse 80% 60% at 50% 50%,rgba(196,154,74,0.06) 0%,transparent 70%),
+                    var(--panel);
+            font-size:0.7rem;letter-spacing:0.12em;text-transform:uppercase;color:rgba(196,154,74,0.4);
+            clip-path:inset(0 50% 0 0);
+            transition:none;
+        }
+        .ba-divider{
+            position:absolute;top:0;bottom:0;
+            left:50%;transform:translateX(-50%);
+            width:2px;background:var(--gold);z-index:10;cursor:col-resize;
+        }
+        .ba-handle{
+            position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+            width:2.5rem;height:2.5rem;border-radius:50%;
+            background:var(--gold);display:flex;align-items:center;justify-content:center;
+            box-shadow:0 4px 20px rgba(196,154,74,0.3);
+        }
+        .ba-label{
+            position:absolute;top:1rem;
+            font-size:0.6rem;letter-spacing:0.16em;text-transform:uppercase;
+            padding:0.3rem 0.7rem;
+        }
+        .ba-label.before-lbl{left:1rem;background:rgba(14,13,11,0.8);color:var(--muted);}
+        .ba-label.after-lbl{right:1rem;background:rgba(196,154,74,0.15);color:var(--gold);}
+
+        /* ─── UNIT GRID ─── */
+        .units-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:1.5rem;}
+        .unit-card{
+            border:1px solid var(--border);padding:2rem;position:relative;
+            transition:border-color 0.3s, background 0.3s;cursor:default;
+        }
+        .unit-card:hover{border-color:var(--gold);background:rgba(196,154,74,0.03);}
+        .unit-num{font-family:'Playfair Display',serif;font-size:2.5rem;font-weight:400;color:rgba(196,154,74,0.15);position:absolute;top:1.2rem;right:1.5rem;}
+        .unit-floor{font-size:0.6rem;letter-spacing:0.2em;text-transform:uppercase;color:var(--gold);margin-bottom:0.5rem;}
+        .unit-name{font-family:'Playfair Display',serif;font-size:1.15rem;color:var(--warm);margin-bottom:0.5rem;}
+        .unit-details{font-size:0.78rem;color:var(--muted);line-height:1.7;margin-bottom:1rem;}
+        .unit-status{display:inline-flex;align-items:center;gap:0.5rem;font-size:0.6rem;letter-spacing:0.14em;text-transform:uppercase;}
+        .unit-status.reserved{color:var(--gold);}
+        .unit-status.available{color:#7FB069;}
+        .unit-status-dot{width:5px;height:5px;border-radius:50%;}
+        .reserved .unit-status-dot{background:var(--gold);}
+        .available .unit-status-dot{background:#7FB069;}
+        .unit-bar-track{height:1px;background:rgba(196,154,74,0.1);margin-top:1rem;}
+        .unit-bar-fill{height:100%;background:var(--gold);transition:width 1.5s 0.3s cubic-bezier(0.16,1,0.3,1);}
+        .unit-pct{font-size:0.6rem;letter-spacing:0.1em;color:rgba(196,154,74,0.5);margin-top:0.3rem;}
+        .unit-fp{
+            width:100%;aspect-ratio:3/2;
+            margin-bottom:1rem;
+            background:var(--faint);
+            display:flex;align-items:center;justify-content:center;
+            border:1px solid rgba(196,154,74,0.06);
+            position:relative;overflow:hidden;
+        }
+        /* Schematic floor plan drawings using CSS */
+        .fp-lines{position:absolute;inset:10px;}
+
+        /* ─── FINISHES ─── */
+        .finishes-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1.5rem;}
+        .finish-swatch{border:1px solid var(--border);overflow:hidden;}
+        .swatch-color{height:120px;position:relative;}
+        .swatch-info{padding:1rem;}
+        .swatch-category{font-size:0.58rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
+        .swatch-name{font-size:0.85rem;color:var(--warm);font-weight:400;}
+        .swatch-desc{font-size:0.72rem;color:var(--muted);margin-top:0.2rem;}
+
+        /* ─── TEAM ─── */
+        .team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:2rem;}
+        .team-card{padding:2rem;border:1px solid var(--border);}
+        .team-avatar{
+            width:56px;height:56px;border-radius:50%;
+            background:var(--gold-dim);display:flex;align-items:center;justify-content:center;
+            font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--gold);
+            margin-bottom:1.2rem;
+        }
+        .team-role{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--gold);margin-bottom:0.3rem;}
+        .team-name{font-family:'Playfair Display',serif;font-size:1.2rem;color:var(--warm);margin-bottom:0.5rem;}
+        .team-bio{font-size:0.8rem;color:var(--muted);line-height:1.7;}
+
+        /* ─── NEIGHBORHOOD ─── */
+        .nbhd-grid{display:grid;grid-template-columns:1fr 1fr;gap:5rem;align-items:start;}
+        .nbhd-list{list-style:none;margin-top:2rem;}
+        .nbhd-list li{display:flex;gap:1.2rem;align-items:flex-start;padding:1.2rem 0;border-bottom:1px solid var(--border);}
+        .nbhd-list li:first-child{border-top:1px solid var(--border);}
+        .ni-icon{color:var(--gold);flex-shrink:0;margin-top:2px;}
+        .ni-title{font-size:0.83rem;font-weight:500;color:var(--warm);margin-bottom:0.2rem;}
+        .ni-desc{font-size:0.77rem;color:var(--muted);line-height:1.65;}
+        .nbhd-map{
+            aspect-ratio:3/4;border:1px solid var(--border);
+            background:
+                    radial-gradient(circle at 50% 50%,rgba(196,154,74,0.05) 0%,transparent 65%),
+                    repeating-linear-gradient(0deg,transparent,transparent 28px,rgba(196,154,74,0.04) 28px,rgba(196,154,74,0.04) 29px),
+                    repeating-linear-gradient(90deg,transparent,transparent 28px,rgba(196,154,74,0.04) 28px,rgba(196,154,74,0.04) 29px),
+                    var(--deep);
+            display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;
+            color:var(--muted);font-size:0.72rem;letter-spacing:0.1em;text-transform:uppercase;
+            position:relative;
+        }
+        .map-pin{
+            width:40px;height:40px;border-radius:50%;
+            background:var(--gold-dim);border:1px solid var(--gold);
+            display:flex;align-items:center;justify-content:center;
+            animation:pulse 3s infinite;
+        }
+
+        /* ─── FAQ ─── */
+        .faq-list{max-width:760px;}
+        .faq-item{border-bottom:1px solid var(--border);}
+        .faq-q{
+            width:100%;background:none;border:none;color:var(--warm);
+            font-family:'Jost',sans-serif;font-size:0.92rem;font-weight:400;
+            text-align:left;padding:1.5rem 0;cursor:pointer;
+            display:flex;justify-content:space-between;align-items:center;gap:1rem;
+            transition:color 0.3s;
+        }
+        .faq-q:hover{color:var(--gold-lt);}
+        .faq-icon{color:var(--gold);flex-shrink:0;transition:transform 0.35s;}
+        .faq-item.open .faq-icon{transform:rotate(45deg);}
+        .faq-a{
+            font-size:0.85rem;color:var(--muted);line-height:1.8;
+            max-height:0;overflow:hidden;transition:max-height 0.4s cubic-bezier(0.16,1,0.3,1), padding 0.3s;
+        }
+        .faq-item.open .faq-a{max-height:300px;padding-bottom:1.5rem;}
+
+        /* ─── COUNTDOWN ─── */
+        .countdown-bar{
+            background:var(--deep);
+            border-top:1px solid var(--border);border-bottom:1px solid var(--border);
+            padding:4rem 0;text-align:center;
+        }
+        .countdown-label{font-size:0.63rem;letter-spacing:0.26em;text-transform:uppercase;color:var(--gold);margin-bottom:2rem;}
+        .countdown-digits{display:flex;justify-content:center;gap:3rem;align-items:flex-end;}
+        .cd-unit{display:flex;flex-direction:column;align-items:center;gap:0.5rem;}
+        .cd-num{font-family:'Playfair Display',serif;font-size:clamp(3rem,7vw,6rem);font-weight:400;color:var(--warm);line-height:1;}
+        .cd-lbl{font-size:0.6rem;letter-spacing:0.18em;text-transform:uppercase;color:var(--muted);}
+        .cd-sep{font-family:'Playfair Display',serif;font-size:4rem;color:var(--gold-dim);line-height:1;padding-bottom:0.3rem;}
+
+        /* ─── CONTACT ─── */
+        .contact-section{padding:8rem 0;text-align:center;}
+        .contact-inner{max-width:560px;margin:0 auto;}
+        .contact-form{display:flex;flex-direction:column;gap:1rem;margin:2.5rem 0;}
+        .contact-form input,.contact-form select{
+            background:rgba(255,255,255,0.03);border:1px solid var(--border);
+            color:var(--warm);padding:1rem 1.25rem;
+            font-family:'Jost',sans-serif;font-size:0.85rem;font-weight:300;
+            outline:none;transition:border-color 0.3s;
+            -webkit-appearance:none;
+        }
+        .contact-form input::placeholder{color:rgba(138,130,120,0.5);}
+        .contact-form input:focus,.contact-form select:focus{border-color:var(--gold);}
+        .contact-form select{color:var(--muted);}
+        .contact-form select option{background:var(--charcoal);color:var(--warm);}
+        .submit-btn{
+            background:var(--gold);color:var(--ink);border:none;
+            padding:1.1rem 2rem;font-family:'Jost',sans-serif;
+            font-size:0.7rem;letter-spacing:0.16em;text-transform:uppercase;
+            cursor:pointer;transition:background 0.3s;font-weight:500;
+        }
+        .submit-btn:hover{background:var(--gold-lt);}
+        .contact-disc{font-size:0.7rem;color:rgba(138,130,120,0.45);line-height:1.7;}
+        .success-msg{display:none;padding:1.5rem;border:1px solid var(--gold);color:var(--gold);font-size:0.85rem;margin-top:1rem;}
+
+        /* ─── FOOTER ─── */
+        footer{
+            padding:2.5rem 3rem;display:flex;justify-content:space-between;align-items:center;
+            border-top:1px solid var(--border);
+        }
+        .f-logo{font-family:'Playfair Display',serif;font-size:0.9rem;letter-spacing:0.1em;color:rgba(138,130,120,0.5);}
+        .f-logo span{color:rgba(196,154,74,0.5);}
+        .f-legal{font-size:0.62rem;color:rgba(138,130,120,0.3);letter-spacing:0.04em;max-width:500px;text-align:right;line-height:1.6;}
+
+        /* ─── REVEAL ─── */
+        .reveal{opacity:0;transform:translateY(22px);transition:opacity 0.75s,transform 0.75s;}
+        .reveal.visible{opacity:1;transform:translateY(0);}
+        .reveal-delay-1{transition-delay:0.1s;}
+        .reveal-delay-2{transition-delay:0.2s;}
+        .reveal-delay-3{transition-delay:0.3s;}
+        .reveal-delay-4{transition-delay:0.4s;}
+
+        /* ─── KEYFRAMES ─── */
+        @keyframes fU{from{opacity:0;transform:translateY(22px);}to{opacity:1;transform:translateY(0);}}
+        @keyframes pulse{0%,100%{box-shadow:0 0 0 0 rgba(196,154,74,0.25);}50%{box-shadow:0 0 0 10px rgba(196,154,74,0);}}
+        @keyframes scrollPulse{0%{opacity:1;transform:scaleY(1);}100%{opacity:0;transform:scaleY(0.3);}}
+
+        /* ─── RESPONSIVE ─── */
+        @media(max-width:900px){
+            nav{padding:1rem 1.5rem;flex-wrap:wrap;gap:1rem;}
+            .nav-links{display:none;}
+            .hero{padding:0 1.5rem 4rem;}
+            .wrap{padding:0 1.5rem;}
+            .progress-hero{grid-template-columns:1fr;}
+            .milestones{grid-template-columns:1fr;gap:2rem;}
+            .milestones::before{display:none;}
+            .ms{padding-top:0;padding-left:3rem;}
+            .ms-dot{top:0;left:0;}
+            .units-grid{grid-template-columns:1fr;}
+            .finishes-grid{grid-template-columns:1fr 1fr;}
+            .team-grid{grid-template-columns:1fr;}
+            .nbhd-grid{grid-template-columns:1fr;}
+            .ba-grid{grid-template-columns:1fr;}
+            .countdown-digits{gap:1.5rem;}
+            footer{flex-direction:column;gap:1rem;text-align:center;padding:2rem 1.5rem;}
+            .f-legal{text-align:center;}
+            .je-photos{grid-template-columns:1fr 1fr;}
+            .journal-entry{grid-template-columns:1fr;gap:1.5rem;}
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav id="top-nav">
+    <div class="nav-logo">246 <span>Havre</span></div>
+    <ul class="nav-links">
+        <li><a href="#progress">Progress</a></li>
+        <li><a href="#journal">Updates</a></li>
+        <li><a href="#residences">Residences</a></li>
+        <li><a href="#finishes">Finishes</a></li>
+        <li><a href="#neighborhood">Neighborhood</a></li>
+        <li><a href="#faq">FAQ</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Stay Informed</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-grain"></div>
+    <div class="hero-lines"></div>
+    <p class="hero-eyebrow">246 Havre Street · East Boston, Massachusetts</p>
+    <h1 class="hero-h1">Nine<br><em>residences.</em><br>Rising now.</h1>
+    <div class="hero-row">
+        <p class="hero-desc">A boutique collection taking shape in one of Boston's most dynamic neighborhoods. Follow the build — milestone by milestone, update by update.</p>
+        <div class="hero-stats">
+            <div>
+                <div class="hstat-num">9</div>
+                <div class="hstat-lbl">Residences</div>
+            </div>
+            <div>
+                <div class="hstat-num">35<span>%</span></div>
+                <div class="hstat-lbl">Complete</div>
+            </div>
+            <div>
+                <div class="hstat-num">Q4</div>
+                <div class="hstat-lbl">Est. Delivery '25</div>
+            </div>
+        </div>
+    </div>
+    <div class="hero-scroll">
+        <span>Scroll</span>
+        <div class="scroll-line"></div>
+    </div>
+</section>
+
+<!-- COUNTDOWN -->
+<div class="countdown-bar">
+    <p class="countdown-label">Estimated Move-In · Q4 2025</p>
+    <div class="countdown-digits">
+        <div class="cd-unit"><div class="cd-num" id="cd-days">--</div><div class="cd-lbl">Days</div></div>
+        <div class="cd-sep">·</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-hours">--</div><div class="cd-lbl">Hours</div></div>
+        <div class="cd-sep">·</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-mins">--</div><div class="cd-lbl">Minutes</div></div>
+        <div class="cd-sep">·</div>
+        <div class="cd-unit"><div class="cd-num" id="cd-secs">--</div><div class="cd-lbl">Seconds</div></div>
+    </div>
+</div>
+
+<!-- PROGRESS -->
+<section id="progress">
+    <div class="wrap">
+        <div class="progress-hero reveal">
+            <div>
+                <p class="s-label">Overall Completion</p>
+                <div class="big-pct">35<span>%</span></div>
+            </div>
+            <div class="progress-meta">
+                <p>Construction is actively underway. The foundation is set, framing is rising, and the building's structure is becoming tangible week by week.</p>
+                <div class="pill"><span class="pill-dot"></span>Framing in Progress</div>
+            </div>
+        </div>
+        <div class="track reveal">
+            <div class="track-fill" id="main-bar" style="width:35%"></div>
+        </div>
+        <div class="track-labels reveal">
+            <span>Groundbreaking</span>
+            <span>Foundation</span>
+            <span>Framing ◂ Now</span>
+            <span>Exterior</span>
+            <span>Interior</span>
+            <span>Delivery</span>
+        </div>
+
+        <!-- MILESTONE DOTS -->
+        <div class="milestones">
+            <div class="ms done reveal">
+                <div class="ms-dot">✓</div>
+                <p class="ms-name">Permits &amp; Approvals</p>
+                <p class="ms-date">Completed Q3 '24</p>
+            </div>
+            <div class="ms done reveal reveal-delay-1">
+                <div class="ms-dot">✓</div>
+                <p class="ms-name">Site Prep &amp; Foundation</p>
+                <p class="ms-date">Completed Q4 '24</p>
+            </div>
+            <div class="ms active reveal reveal-delay-2">
+                <div class="ms-dot">→</div>
+                <p class="ms-name">Structural Framing</p>
+                <p class="ms-date">Underway Now</p>
+            </div>
+            <div class="ms upcoming reveal reveal-delay-3">
+                <div class="ms-dot">4</div>
+                <p class="ms-name">Exterior &amp; Weatherproofing</p>
+                <p class="ms-date">Planned Q2 '25</p>
+            </div>
+            <div class="ms upcoming reveal reveal-delay-4">
+                <div class="ms-dot">5</div>
+                <p class="ms-name">MEP &amp; Interior Finishes</p>
+                <p class="ms-date">Planned Q3 '25</p>
+            </div>
+            <div class="ms upcoming reveal">
+                <div class="ms-dot">6</div>
+                <p class="ms-name">CO &amp; Delivery</p>
+                <p class="ms-date">Planned Q4 '25</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- BEFORE / AFTER -->
+<div class="ba-section">
+    <div class="ba-wrap">
+        <div class="ba-grid">
+            <div>
+                <p class="s-label reveal">Then &amp; Now</p>
+                <h2 class="s-title reveal">The site,<br><em>transformed.</em></h2>
+                <p class="s-desc reveal">Drag the slider to see how far 246 Havre has come since day one. We'll update this comparison as each major phase wraps.</p>
+                <p style="font-size:0.78rem;color:rgba(138,130,120,0.5);font-style:italic;" class="reveal">Photos will populate as the project advances.</p>
+            </div>
+            <div class="ba-slider-container reveal" id="ba-slider">
+                <div class="ba-before">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="2" stroke="#8A8278" stroke-width="1.5"/><path d="M4 22l7-7 5 5 4-4 8 8" stroke="#8A8278" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Before · Site Cleared</span>
+                </div>
+                <div class="ba-after" id="ba-after">
+                    <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="2" stroke="#C49A4A" stroke-width="1.5"/><path d="M4 22l7-7 5 5 4-4 8 8" stroke="#C49A4A" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    <span>Today · Framing Rising</span>
+                </div>
+                <div class="ba-divider" id="ba-divider">
+                    <div class="ba-handle">
+                        <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M5 8h6M3 5l-2 3 2 3M13 5l2 3-2 3" stroke="#0E0D0B" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                    </div>
+                </div>
+                <div class="ba-label before-lbl">Before</div>
+                <div class="ba-label after-lbl">Today</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FIELD JOURNAL -->
+<section id="journal">
+    <div class="wrap">
+        <p class="s-label reveal">Field Journal</p>
+        <h2 class="s-title reveal">Bi-weekly <em>updates</em><br>from the site.</h2>
+        <p class="s-desc reveal">Every two weeks, we walk the site and share what's new — honest progress, no spin. Photos and notes from our team on the ground.</p>
+
+        <div class="journal-feed">
+
+            <!-- ENTRY 1 -->
+            <div class="journal-entry reveal">
+                <div class="je-date-col">
+                    <p class="je-week">Week 8</p>
+                    <p class="je-datenum">14</p>
+                    <p class="je-month">Mar 2025</p>
+                </div>
+                <div class="je-content">
+                    <h3 class="je-headline">Framing hits the second floor</h3>
+                    <p class="je-body">A strong two weeks on site — the crew completed first floor framing and began the second floor deck. The building's footprint is now fully visible, and you can begin to read the layout of the lower units. Weather cooperated this week which allowed the team to push ahead of schedule on the stair core.</p>
+                    <div class="je-photos">
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="je-tag gold">Framing</span>
+                        <span class="je-tag">On Schedule</span>
+                        <span class="je-tag">2nd Floor</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ENTRY 2 -->
+            <div class="journal-entry reveal">
+                <div class="je-date-col">
+                    <p class="je-week">Week 6</p>
+                    <p class="je-datenum">28</p>
+                    <p class="je-month">Feb 2025</p>
+                </div>
+                <div class="je-content">
+                    <h3 class="je-headline">Foundation cured, framing begins</h3>
+                    <p class="je-body">The foundation cure period is complete and inspections passed without issue. The framing crew mobilized this week and first-floor walls are now going up. This is always a milestone moment — the building starts to feel real. Slab is clean, and the layout matches plans exactly.</p>
+                    <div class="je-photos">
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="je-tag gold">Milestone</span>
+                        <span class="je-tag">Foundation Complete</span>
+                        <span class="je-tag">Framing Started</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ENTRY 3 -->
+            <div class="journal-entry reveal">
+                <div class="je-date-col">
+                    <p class="je-week">Week 4</p>
+                    <p class="je-datenum">14</p>
+                    <p class="je-month">Feb 2025</p>
+                </div>
+                <div class="je-content">
+                    <h3 class="je-headline">Foundation pour complete</h3>
+                    <p class="je-body">A big day on Havre Street — the foundation pour finished this week. The concrete is curing now and the site is clean. Excavation came in exactly as planned with no surprises underground. We're on track for the framing crew to mobilize in the next two weeks.</p>
+                    <div class="je-photos">
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                        <div class="je-photo placeholder">
+                            <svg class="ph-icon" width="28" height="28" viewBox="0 0 28 28" fill="none"><rect x="3" y="5" width="22" height="18" rx="2" stroke="#C49A4A" stroke-width="1.2"/><circle cx="14" cy="14" r="4" stroke="#C49A4A" stroke-width="1.2"/><path d="M10 5l1.5-3h5L18 5" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg>
+                            <p class="ph-lbl">Photo pending</p>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="je-tag gold">Foundation</span>
+                        <span class="je-tag">On Schedule</span>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- RESIDENCES -->
+<section id="residences" style="background:var(--deep);border-top:1px solid var(--border);border-bottom:1px solid var(--border);">
+    <div class="wrap">
+        <p class="s-label reveal">The Residences</p>
+        <h2 class="s-title reveal">Nine homes.<br><em>Your future one.</em></h2>
+        <p class="s-desc reveal">Each unit's progress is tracked individually — find yours below. Floor plans are schematic and for reference only; final dimensions subject to minor variation.</p>
+
+        <div class="units-grid">
+
+            <div class="unit-card reveal">
+                <div class="unit-num">1</div>
+                <p class="unit-floor">Garden Level · Unit 1</p>
+                <p class="unit-name">Garden Residence</p>
+                <div class="unit-fp">
+                    <svg width="100%" height="100%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="110" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="10" y1="60" x2="120" y2="60" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <line x1="120" y1="10" x2="120" y2="120" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <text x="55" y="42" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Living / Kitchen</text>
+                        <text x="55" y="88" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Primary BR</text>
+                        <text x="158" y="42" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">BR 2</text>
+                        <text x="158" y="88" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Bath / Hall</text>
+                        <rect x="60" y="55" width="15" height="5" fill="none" stroke="rgba(196,154,74,0.3)" stroke-width="0.5"/>
+                    </svg>
+                </div>
+                <p class="unit-details">2 Bed · 2 Bath · ~950 SF<br>Private patio · Garden access</p>
+                <span class="unit-status reserved"><span class="unit-status-dot"></span>Under Agreement</span>
+                <div class="unit-bar-track"><div class="unit-bar-fill" style="width:35%"></div></div>
+                <p class="unit-pct">Construction 35% complete</p>
+            </div>
+
+            <div class="unit-card reveal reveal-delay-1">
+                <div class="unit-num">2</div>
+                <p class="unit-floor">Floor 1 · Unit 2</p>
+                <p class="unit-name">Classic Residence</p>
+                <div class="unit-fp">
+                    <svg width="100%" height="100%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="110" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="10" y1="55" x2="190" y2="55" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <line x1="100" y1="55" x2="100" y2="120" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <text x="100" y="36" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Open Living / Dining / Kitchen</text>
+                        <text x="50" y="90" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Primary BR</text>
+                        <text x="148" y="90" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">BR 2 / Bath</text>
+                    </svg>
+                </div>
+                <p class="unit-details">2 Bed · 1.5 Bath · ~875 SF<br>South-facing windows</p>
+                <span class="unit-status reserved"><span class="unit-status-dot"></span>Under Agreement</span>
+                <div class="unit-bar-track"><div class="unit-bar-fill" style="width:35%"></div></div>
+                <p class="unit-pct">Construction 35% complete</p>
+            </div>
+
+            <div class="unit-card reveal reveal-delay-2">
+                <div class="unit-num">3</div>
+                <p class="unit-floor">Floor 1 · Unit 3</p>
+                <p class="unit-name">Corner Residence</p>
+                <div class="unit-fp">
+                    <svg width="100%" height="100%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="110" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="110" y1="10" x2="110" y2="120" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <line x1="110" y1="65" x2="190" y2="65" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <text x="55" y="68" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Open Plan</text>
+                        <text x="148" y="42" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">BR</text>
+                        <text x="148" y="90" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Bath</text>
+                    </svg>
+                </div>
+                <p class="unit-details">1 Bed · 1 Bath · ~720 SF<br>Corner unit · Dual exposure</p>
+                <span class="unit-status available"><span class="unit-status-dot"></span>Available</span>
+                <div class="unit-bar-track"><div class="unit-bar-fill" style="width:35%"></div></div>
+                <p class="unit-pct">Construction 35% complete</p>
+            </div>
+
+            <div class="unit-card reveal">
+                <div class="unit-num">4</div>
+                <p class="unit-floor">Floor 2 · Unit 4</p>
+                <p class="unit-name">Elevated Residence</p>
+                <div class="unit-fp">
+                    <svg width="100%" height="100%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="110" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="10" y1="58" x2="130" y2="58" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <line x1="130" y1="10" x2="130" y2="120" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <text x="65" y="36" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Living / Dining</text>
+                        <text x="65" y="88" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Primary + Bath</text>
+                        <text x="163" y="68" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Kit / BR2</text>
+                    </svg>
+                </div>
+                <p class="unit-details">2 Bed · 2 Bath · ~990 SF<br>Second floor · City views</p>
+                <span class="unit-status reserved"><span class="unit-status-dot"></span>Under Agreement</span>
+                <div class="unit-bar-track"><div class="unit-bar-fill" style="width:35%"></div></div>
+                <p class="unit-pct">Construction 35% complete</p>
+            </div>
+
+            <div class="unit-card reveal reveal-delay-1">
+                <div class="unit-num">5</div>
+                <p class="unit-floor">Floor 2 · Unit 5</p>
+                <p class="unit-name">Midtown Residence</p>
+                <div class="unit-fp">
+                    <svg width="100%" height="100%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="110" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="10" y1="65" x2="190" y2="65" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <line x1="95" y1="65" x2="95" y2="120" stroke="rgba(196,154,74,0.2)" stroke-width="1"/>
+                        <text x="100" y="40" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Open Living / Kitchen</text>
+                        <text x="48" y="95" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Primary</text>
+                        <text x="145" y="95" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">BR 2 + Bath</text>
+                    </svg>
+                </div>
+                <p class="unit-details">2 Bed · 1 Bath · ~840 SF<br>Open kitchen plan</p>
+                <span class="unit-status available"><span class="unit-status-dot"></span>Available</span>
+                <div class="unit-bar-track"><div class="unit-bar-fill" style="width:35%"></div></div>
+                <p class="unit-pct">Construction 35% complete</p>
+            </div>
+
+            <div class="unit-card reveal reveal-delay-2">
+                <div class="unit-num">PH</div>
+                <p class="unit-floor">Penthouse · Floor 3</p>
+                <p class="unit-name">Penthouse</p>
+                <div class="unit-fp">
+                    <svg width="100%" height="100%" viewBox="0 0 200 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <rect x="10" y="10" width="180" height="110" stroke="rgba(196,154,74,0.45)" stroke-width="1.5"/>
+                        <line x1="10" y1="55" x2="150" y2="55" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="150" y1="10" x2="150" y2="120" stroke="rgba(196,154,74,0.25)" stroke-width="1"/>
+                        <line x1="10" y1="85" x2="150" y2="85" stroke="rgba(196,154,74,0.15)" stroke-width="0.8"/>
+                        <text x="75" y="35" font-size="7" fill="rgba(196,154,74,0.5)" text-anchor="middle" font-family="Jost">Great Room</text>
+                        <text x="40" y="73" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Primary Suite</text>
+                        <text x="95" y="105" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">BR 2 + 3</text>
+                        <text x="174" y="68" font-size="7" fill="rgba(196,154,74,0.35)" text-anchor="middle" font-family="Jost">Roof Deck</text>
+                    </svg>
+                </div>
+                <p class="unit-details">3 Bed · 2.5 Bath · ~1,350 SF<br>Private roof deck · Harbor views</p>
+                <span class="unit-status reserved"><span class="unit-status-dot"></span>Under Agreement</span>
+                <div class="unit-bar-track"><div class="unit-bar-fill" style="width:35%"></div></div>
+                <p class="unit-pct">Construction 35% complete</p>
+            </div>
+
+        </div>
+        <p style="margin-top:1.5rem;font-size:0.7rem;color:rgba(138,130,120,0.4);font-style:italic;">Showing 6 of 9 residences. Floor plans are schematic and not to scale. Contact us for complete unit details.</p>
+    </div>
+</section>
+
+<!-- FINISHES -->
+<section id="finishes">
+    <div class="wrap">
+        <p class="s-label reveal">Material Palette</p>
+        <h2 class="s-title reveal">Finishes curated<br><em>with intention.</em></h2>
+        <p class="s-desc reveal">The standard finish package has been selected to balance warmth, durability, and timeless character. Every material was chosen to feel considered, not generic.</p>
+
+        <div class="finishes-grid">
+            <div class="finish-swatch reveal">
+                <div class="swatch-color" style="background:linear-gradient(135deg,#C8BBA8 0%,#B0A28E 100%);"></div>
+                <div class="swatch-info">
+                    <p class="swatch-category">Flooring</p>
+                    <p class="swatch-name">White Oak · Matte</p>
+                    <p class="swatch-desc">4" engineered hardwood, lightly brushed</p>
+                </div>
+            </div>
+            <div class="finish-swatch reveal reveal-delay-1">
+                <div class="swatch-color" style="background:linear-gradient(135deg,#E8E0D5 0%,#D4C9BC 100%);"></div>
+                <div class="swatch-info">
+                    <p class="swatch-category">Countertops</p>
+                    <p class="swatch-name">Calacatti Laza · Quartz</p>
+                    <p class="swatch-desc">Warm white with subtle veining</p>
+                </div>
+            </div>
+            <div class="finish-swatch reveal reveal-delay-2">
+                <div class="swatch-color" style="background:linear-gradient(135deg,#2A2822 0%,#3A3630 100%);"></div>
+                <div class="swatch-info">
+                    <p class="swatch-category">Cabinetry</p>
+                    <p class="swatch-name">Flat Panel · Charcoal</p>
+                    <p class="swatch-desc">Matte shaker-style, brushed brass hardware</p>
+                </div>
+            </div>
+            <div class="finish-swatch reveal reveal-delay-3">
+                <div class="swatch-color" style="background:linear-gradient(135deg,#8B9E9A 0%,#7A8F8B 100%);"></div>
+                <div class="swatch-info">
+                    <p class="swatch-category">Tile</p>
+                    <p class="swatch-name">Sage Ceramic · Matte</p>
+                    <p class="swatch-desc">Large format bath & kitchen backsplash</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- TEAM -->
+<section style="background:var(--deep);border-top:1px solid var(--border);">
+    <div class="wrap" style="padding-top:7rem;padding-bottom:7rem;">
+        <p class="s-label reveal">The Team</p>
+        <h2 class="s-title reveal">People you can<br><em>count on.</em></h2>
+        <p class="s-desc reveal">A tight team with a long track record in Greater Boston. We've done this before — and we take our obligations to buyers seriously.</p>
+        <div class="team-grid">
+            <div class="team-card reveal">
+                <div class="team-avatar">D</div>
+                <p class="team-role">Developer</p>
+                <p class="team-name">Development Team</p>
+                <p class="team-bio">East Boston focused developer with a portfolio of boutique residential projects across the neighborhood. Community-first approach to every build.</p>
+            </div>
+            <div class="team-card reveal reveal-delay-1">
+                <div class="team-avatar">GC</div>
+                <p class="team-role">General Contractor</p>
+                <p class="team-name">Construction Team</p>
+                <p class="team-bio">Boston-based GC specializing in urban infill residential. On-time delivery record across 40+ projects. Licensed, bonded, and fully insured in Massachusetts.</p>
+            </div>
+            <div class="team-card reveal reveal-delay-2">
+                <div class="team-avatar">A</div>
+                <p class="team-role">Architecture</p>
+                <p class="team-name">Design Team</p>
+                <p class="team-bio">Contextual design that respects East Boston's architectural fabric while delivering modern, functional interiors for how people actually live.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- NEIGHBORHOOD -->
+<section id="neighborhood">
+    <div class="wrap">
+        <div class="nbhd-grid">
+            <div>
+                <p class="s-label reveal">The Location</p>
+                <h2 class="s-title reveal">East Boston,<br><em>at its best.</em></h2>
+                <p class="s-desc reveal">Havre Street sits in the core of East Boston — walkable, connected, and genuinely community-driven. One of the best value plays left in the city.</p>
+                <ul class="nbhd-list">
+                    <li class="reveal">
+                        <span class="ni-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#C49A4A" stroke-width="1.2"/><path d="M8 5v3l2 2" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round"/></svg></span>
+                        <div><p class="ni-title">Blue Line · 5 min walk</p><p class="ni-desc">Direct to downtown, Back Bay, and Logan Airport. No car required.</p></div>
+                    </li>
+                    <li class="reveal">
+                        <span class="ni-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 2C5.8 2 4 3.8 4 6c0 3 4 8 4 8s4-5 4-8c0-2.2-1.8-4-4-4zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" stroke="#C49A4A" stroke-width="1.2"/></svg></span>
+                        <div><p class="ni-title">Harborwalk & Piers Park</p><p class="ni-desc">East Boston's waterfront is a few blocks away — waterfront runs, morning walks, summer events.</p></div>
+                    </li>
+                    <li class="reveal">
+                        <span class="ni-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 13V7l5-5 5 5v6" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><rect x="6" y="10" width="4" height="3" stroke="#C49A4A" stroke-width="1.2"/></svg></span>
+                        <div><p class="ni-title">Dining & Community</p><p class="ni-desc">Some of Boston's best Latin food, neighborhood coffee shops, and local restaurants line Meridian and Maverick Square.</p></div>
+                    </li>
+                    <li class="reveal">
+                        <span class="ni-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M2 10l4-6 3 4 2-3 3 5H2z" stroke="#C49A4A" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+                        <div><p class="ni-title">Appreciation Story</p><p class="ni-desc">East Boston has seen consistent appreciation driven by transit access, waterfront investment, and proximity to downtown Boston.</p></div>
+                    </li>
+                </ul>
+            </div>
+            <div class="nbhd-map reveal">
+                <div class="map-pin">
+                    <svg width="18" height="18" viewBox="0 0 18 18" fill="none"><path d="M9 2C6.8 2 5 3.8 5 6c0 3.5 4 10 4 10s4-6.5 4-10c0-2.2-1.8-4-4-4zm0 5.5a1.5 1.5 0 1 1 0-3 1.5 1.5 0 0 1 0 3z" fill="#C49A4A"/></svg>
+                </div>
+                <span>246 Havre St · East Boston</span>
+                <span style="font-size:0.58rem;opacity:0.4;margin-top:0.3rem;">Map coming soon</span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section id="faq" style="background:var(--deep);border-top:1px solid var(--border);">
+    <div class="wrap" style="padding-top:7rem;padding-bottom:7rem;">
+        <p class="s-label reveal">Questions</p>
+        <h2 class="s-title reveal">Things buyers<br><em>want to know.</em></h2>
+        <p class="s-desc reveal">We'd rather you have the answers upfront than wonder. Reach out anytime for anything not covered here.</p>
+        <div class="faq-list reveal">
+
+            <div class="faq-item">
+                <button class="faq-q">What happens if the project is delayed?<span class="faq-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+                <div class="faq-a">Your purchase and sale agreement includes provisions for reasonable delays. We will communicate any material changes to the timeline directly to all buyers as soon as we know. Our current Q4 2025 estimate is our best projection based on current progress and conditions.</div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q">When will I do my pre-closing walkthrough?<span class="faq-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+                <div class="faq-a">Walkthroughs are typically scheduled 2–4 weeks prior to closing. You'll walk your unit with our project manager to identify any punch list items before your move-in date. A second walkthrough is done after punch list items are addressed to confirm completion.</div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q">Can I make finish selections or upgrades?<span class="faq-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+                <div class="faq-a">Depending on where we are in construction, there may be opportunities to select from a curated upgrade package. Buyers will be contacted individually about selection deadlines. Changes made after certain construction milestones may not be possible.</div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q">Who do I contact with questions about my unit?<span class="faq-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+                <div class="faq-a">Your primary point of contact is the sales team. For construction-specific questions, we hold periodic buyer update calls and send bi-weekly field journal emails. Use the form on this site to register and ensure you're on our list.</div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q">What warranty is provided on my unit?<span class="faq-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+                <div class="faq-a">All units include a standard 1-year builder's warranty covering workmanship and materials, plus manufacturer warranties on all appliances and mechanical systems. Massachusetts law also provides additional implied warranties for new residential construction.</div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-q">How often will I receive updates?<span class="faq-icon"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg></span></button>
+                <div class="faq-a">Registered buyers receive a bi-weekly field journal email with site photos and a brief construction note. This site is also updated at each major milestone. We believe in over-communicating rather than going quiet.</div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+    <div class="wrap">
+        <div class="contact-inner">
+            <p class="s-label reveal" style="justify-content:center;">Stay Informed</p>
+            <h2 class="s-title reveal" style="text-align:center;">Be the first<br><em>to know.</em></h2>
+            <p style="color:var(--muted);font-size:0.88rem;line-height:1.8;margin-bottom:0;text-align:center;" class="reveal">Bi-weekly field journal updates, milestone alerts, and move-in countdown — delivered directly.</p>
+            <div class="contact-form reveal">
+                <input type="text" placeholder="Full Name" id="cf-name"/>
+                <input type="email" placeholder="Email Address" id="cf-email"/>
+                <input type="tel" placeholder="Phone (optional)"/>
+                <select id="cf-unit">
+                    <option value="" disabled selected>My unit (if known)</option>
+                    <option>Unit 1 · Garden Residence</option>
+                    <option>Unit 2 · Classic Residence</option>
+                    <option>Unit 3 · Corner Residence</option>
+                    <option>Unit 4 · Elevated Residence</option>
+                    <option>Unit 5 · Midtown Residence</option>
+                    <option>Penthouse</option>
+                    <option>Not yet under agreement</option>
+                </select>
+                <button class="submit-btn" onclick="submitForm()">Register for Updates →</button>
+            </div>
+            <div class="success-msg reveal" id="success-msg">✓ &nbsp; You're registered. Expect your first field journal update within the week.</div>
+            <p class="contact-disc reveal">By submitting, you agree to receive periodic construction updates. This is not a purchase agreement, reservation, or commitment of any kind. All timelines are estimates and subject to change without notice.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+    <div class="f-logo">246 <span>Havre</span> · East Boston</div>
+    <div class="f-legal">© 2025 · All information provided on this site is for informational purposes only and subject to change. Not an offering where prohibited by law. Floor plans are schematic only. Completion dates are estimates.</div>
+</footer>
+
+<script>
+    // ── REVEAL ON SCROLL ──
+    const observer = new IntersectionObserver(entries => {
+        entries.forEach(e => {
+            if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); }
+        });
+    }, { threshold: 0.1 });
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+    // ── PROGRESS BAR ──
+    const bar = document.getElementById('main-bar');
+    const barObs = new IntersectionObserver(entries => {
+        entries.forEach(e => { if (e.isIntersecting) { bar.style.width='35%'; barObs.unobserve(e.target); }});
+    }, { threshold: 0.5 });
+    if (bar) { bar.style.width='0'; barObs.observe(bar); }
+
+    // ── UNIT BARS ──
+    document.querySelectorAll('.unit-bar-fill').forEach(b => {
+        const w = b.style.width;
+        b.style.width = '0';
+        const uObs = new IntersectionObserver(entries => {
+            entries.forEach(e => { if (e.isIntersecting) { b.style.width = w; uObs.unobserve(e.target); }});
+        }, { threshold: 0.5 });
+        uObs.observe(b);
+    });
+
+    // ── COUNTDOWN ──
+    const target = new Date('2025-11-01T00:00:00');
+    function updateCountdown() {
+        const now = new Date();
+        const diff = target - now;
+        if (diff <= 0) {
+            document.getElementById('cd-days').textContent = '00';
+            document.getElementById('cd-hours').textContent = '00';
+            document.getElementById('cd-mins').textContent = '00';
+            document.getElementById('cd-secs').textContent = '00';
+            return;
+        }
+        const d = Math.floor(diff / 86400000);
+        const h = Math.floor((diff % 86400000) / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        document.getElementById('cd-days').textContent  = String(d).padStart(2,'0');
+        document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+        document.getElementById('cd-mins').textContent  = String(m).padStart(2,'0');
+        document.getElementById('cd-secs').textContent  = String(s).padStart(2,'0');
+    }
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+
+    // ── BEFORE/AFTER SLIDER ──
+    const slider = document.getElementById('ba-slider');
+    const after  = document.getElementById('ba-after');
+    const divider = document.getElementById('ba-divider');
+    let dragging = false;
+    function setSlider(x) {
+        const rect = slider.getBoundingClientRect();
+        let pct = Math.max(5, Math.min(95, ((x - rect.left) / rect.width) * 100));
+        after.style.clipPath = `inset(0 ${100 - pct}% 0 0)`;
+        divider.style.left = pct + '%';
+    }
+    slider.addEventListener('mousedown', e => { dragging = true; setSlider(e.clientX); });
+    slider.addEventListener('touchstart', e => { dragging = true; setSlider(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener('mousemove', e => { if (dragging) setSlider(e.clientX); });
+    window.addEventListener('touchmove', e => { if (dragging) setSlider(e.touches[0].clientX); }, {passive:true});
+    window.addEventListener('mouseup', () => dragging = false);
+    window.addEventListener('touchend', () => dragging = false);
+    // Init
+    setSlider(slider ? slider.getBoundingClientRect().left + slider.getBoundingClientRect().width * 0.5 : 0);
+
+    // ── FAQ ──
+    document.querySelectorAll('.faq-q').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.faq-item');
+            const isOpen = item.classList.contains('open');
+            document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+            if (!isOpen) item.classList.add('open');
+        });
+    });
+
+    // ── FORM ──
+    function submitForm() {
+        const name = document.getElementById('cf-name').value.trim();
+        const email = document.getElementById('cf-email').value.trim();
+        if (!name || !email) { alert('Please enter your name and email.'); return; }
+        document.querySelector('.contact-form').style.display = 'none';
+        const msg = document.getElementById('success-msg');
+        msg.style.display = 'block';
+        msg.classList.add('visible');
+    }
+</script>
+</body>
+</html>
